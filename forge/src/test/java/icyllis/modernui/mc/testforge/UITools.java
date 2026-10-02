@@ -23,7 +23,6 @@ import icyllis.modernui.view.ViewGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
 import javax.annotation.Nonnull;
@@ -89,21 +88,21 @@ public class UITools {
      * The default arrow cursor.
      */
     public static void useDefaultCursor() {
-        //GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().getWindow(), MemoryUtil.NULL);
+        //;
     }
 
     /**
      * The text input I-beam cursor.
      */
     public static void useIBeamCursor() {
-        //GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().getWindow(), IBEAM_CURSOR);
+        //;
     }
 
     /**
      * The hand cursor on a link or a web-page button.
      */
     public static void useHandCursor() {
-        //GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().getWindow(), HAND_CURSOR);
+        //;
     }
 
     /**
