@@ -21,9 +21,7 @@ package icyllis.modernui.mc;
 import icyllis.modernui.annotation.Nullable;
 import icyllis.modernui.audio.*;
 import icyllis.modernui.core.Core;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import icyllis.modernui.mc.ui.ModernFileDialogs;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -62,14 +60,7 @@ public class MusicPlayer {
     }
 
     public static String openDialogGet() {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            PointerBuffer filters = stack.mallocPointer(1);
-            stack.nUTF8("*.ogg", true);
-            filters.put(stack.getPointerAddress());
-            filters.rewind();
-            return TinyFileDialogs.tinyfd_openFileDialog(null, null,
-                    filters, "Ogg Vorbis (*.ogg)", false);
-        }
+        return ModernFileDialogs.openFile("Ogg Vorbis", "ogg");
     }
 
     public void clearTrack() {

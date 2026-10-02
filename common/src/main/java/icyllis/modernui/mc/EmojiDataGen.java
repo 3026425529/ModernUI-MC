@@ -20,9 +20,7 @@ package icyllis.modernui.mc;
 
 import com.google.gson.*;
 import icyllis.modernui.graphics.text.Emoji;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import icyllis.modernui.mc.ui.ModernFileDialogs;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -42,20 +40,10 @@ public class EmojiDataGen {
         // https://raw.githubusercontent.com/joypixels/emoji-toolkit/master/emoji.json
         // https://raw.githubusercontent.com/googlefonts/emoji-metadata/main/emoji_16_0_ordering.json
         final String iam_cal, joy_pixels, google_fonts, output;
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            PointerBuffer filters = stack.mallocPointer(1);
-            stack.nUTF8("*.json", true);
-            filters.put(stack.getPointerAddress());
-            filters.rewind();
-            iam_cal = TinyFileDialogs.tinyfd_openFileDialog("Open IamCal", null,
-                    filters, "JSON File", false);
-            joy_pixels = TinyFileDialogs.tinyfd_openFileDialog("Open JoyPixels", null,
-                    filters, "JSON File", false);
-            google_fonts = TinyFileDialogs.tinyfd_openFileDialog("Open GoogleFonts", null,
-                    filters, "JSON File", false);
-            output = TinyFileDialogs.tinyfd_saveFileDialog(null, "emoji_data.json",
-                    filters, "JSON File");
-        }
+        iam_cal = ModernFileDialogs.openFile("Open IamCal", "json");
+        joy_pixels = ModernFileDialogs.openFile("Open JoyPixels", "json");
+        google_fonts = ModernFileDialogs.openFile("Open GoogleFonts", "json");
+        output = ModernFileDialogs.saveFile("JSON File", "emoji_data.json", "json");
         if (iam_cal != null && joy_pixels != null && google_fonts != null && output != null) {
             var gson = new Gson();
             var iam_cal_data = read(gson, iam_cal, EmojiEntry[].class);

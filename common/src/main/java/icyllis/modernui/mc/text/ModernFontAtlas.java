@@ -18,7 +18,6 @@
 
 package icyllis.modernui.mc.text;
 
-import com.mojang.renderpearl.backend.opengl.GlTexture;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -126,7 +125,7 @@ public class ModernFontAtlas extends AbstractTexture implements Dumpable {
         mBorderWidth = borderWidth;
         // 64MB at most
         mMaxTextureSize = Math.min(
-                RenderSystem.getDevice().getMaxTextureSize(),
+                16384,
                 maskFormat == Engine.MASK_FORMAT_A8
                         ? 8192
                         : 4096
@@ -206,15 +205,12 @@ public class ModernFontAtlas extends AbstractTexture implements Dumpable {
                 ? NativeImage.Format.RGBA
                 : NativeImage.Format.LUMINANCE;
         var commandEncoder = RenderSystem.getDevice().createCommandEncoder();
-        commandEncoder.writeToTexture(getTexture(), pixels, format,
-                0, 0, rect.x(), rect.y(),
-                rect.width(), rect.height());
+        commandEncoder.writeToTexture(getTexture(), pixels,
+                0, 0, rect.x(), rect.y(), rect.width(), rect.height());
         if (mUseMipmaps) {
             assert mipPixels != null;
             commandEncoder.writeToTexture(getTexture(), mipPixels,
-                    1, 0, rect.x() / 2, rect.y() / 2,
-                    rect.width() / 2, rect.height() / 2,
-                    0, 0);
+                    1, 0, rect.x() / 2, rect.y() / 2);
         }
         /*int rowBytes = rect.width() * ColorInfo.bytesPerPixel(colorType);
         boolean res = ((GLDevice) mContext.getDevice()).writePixels(

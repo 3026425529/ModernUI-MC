@@ -957,7 +957,7 @@ public abstract class UIManager implements LifecycleOwner {
             GL33C.glDisable(GL33C.GL_SCISSOR_TEST);
             GlStateManager._blendFuncSeparate(GL33C.GL_SRC_ALPHA, GL33C.GL_ONE_MINUS_SRC_ALPHA, GL33C.GL_ONE, GL33C.GL_ZERO);
             GL33C.glBlendFuncSeparate(GL33C.GL_SRC_ALPHA, GL33C.GL_ONE_MINUS_SRC_ALPHA, GL33C.GL_ONE, GL33C.GL_ZERO);
-            GlStateManager._enableBlend();
+            GlStateManager._enableBlend(0);
             GL33C.glEnable(GL33C.GL_BLEND);
             GL33C.glBlendEquation(GL33C.GL_FUNC_ADD);
             GlStateManager._disableDepthTest();

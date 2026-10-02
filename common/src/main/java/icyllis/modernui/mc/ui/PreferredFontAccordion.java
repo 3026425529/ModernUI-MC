@@ -39,9 +39,7 @@ import icyllis.modernui.widget.LinearLayout;
 import icyllis.modernui.widget.Spinner;
 import icyllis.modernui.widget.TextView;
 import net.minecraft.client.resources.language.I18n;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
+import icyllis.modernui.mc.ui.ModernFileDialogs;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -132,21 +130,7 @@ public class PreferredFontAccordion implements View.OnClickListener,
             openFile.setText(I18n.get("gui.modernui.browseFiles"));
             openFile.setTextSize(14);
             openFile.setOnClickListener(v1 -> CompletableFuture.runAsync(() -> {
-                String path;
-                try (MemoryStack stack = MemoryStack.stackPush()) {
-                    PointerBuffer filters = stack.mallocPointer(4);
-                    stack.nUTF8("*.ttf", true);
-                    filters.put(stack.getPointerAddress());
-                    stack.nUTF8("*.otf", true);
-                    filters.put(stack.getPointerAddress());
-                    stack.nUTF8("*.ttc", true);
-                    filters.put(stack.getPointerAddress());
-                    stack.nUTF8("*.otc", true);
-                    filters.put(stack.getPointerAddress());
-                    filters.rewind();
-                    path = TinyFileDialogs.tinyfd_openFileDialog(null, null,
-                            filters, "TrueType/OpenType Fonts (*.ttf;*.otf;*.ttc;*.otc)", false);
-                }
+                String path = ModernFileDialogs.openFile("TrueType/OpenType Fonts", "ttf", "otf", "ttc", "otc");
                 if (path != null) {
                     v1.post(() -> {
                         boolean changed = applyNewValue(v1.getContext(), path, mOnFontChanged);

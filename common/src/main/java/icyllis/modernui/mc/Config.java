@@ -18,8 +18,6 @@
 
 package icyllis.modernui.mc;
 
-import com.mojang.blaze3d.platform.Monitor;
-import com.mojang.blaze3d.platform.VideoMode;
 import com.mojang.blaze3d.platform.Window;
 import icyllis.modernui.ModernUI;
 import icyllis.modernui.R;
@@ -45,8 +43,6 @@ import icyllis.modernui.view.ViewConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.ApiStatus;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.MemoryUtil;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -443,71 +439,30 @@ public final class Config {
             WINDOWED_BORDERLESS;
 
             public void apply() {
-                if (this == NORMAL) {
-                    return;
-                }
-                Window window = Minecraft.getInstance().getWindow();
+                if (this == NORMAL) return;
+                Minecraft minecraft = Minecraft.getInstance();
+                Window window = minecraft.getWindow();
                 switch (this) {
-                    case FULLSCREEN -> {
-                        if (!window.isFullscreen()) {
-                            window.toggleFullScreen();
-                        }
-                    }
+                    case FULLSCREEN -> minecraft.options.fullscreen().set(true);
                     case FULLSCREEN_BORDERLESS -> {
-                        if (window.isFullscreen()) {
-                            window.toggleFullScreen();
-                        }
-                        GLFW.glfwRestoreWindow(window.handle());
-                        GLFW.glfwSetWindowAttrib(window.handle(),
-                                GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
-                        Monitor monitor = window.findBestMonitor();
-                        if (monitor != null) {
-                            VideoMode videoMode = monitor.getCurrentMode();
-                            int x = monitor.getX();
-                            int y = monitor.getY();
-                            int width = videoMode.getWidth();
-                            int height = videoMode.getHeight();
-                            GLFW.glfwSetWindowMonitor(window.handle(), MemoryUtil.NULL,
-                                    x, y, width, height, GLFW.GLFW_DONT_CARE);
-                        } else {
-                            GLFW.glfwMaximizeWindow(window.handle());
-                        }
+                        minecraft.options.fullscreen().set(false);
+                        org.lwjgl.sdl.SDLVideo.SDL_SetWindowFullscreen(window.handle(), true);
                     }
-                    case MAXIMIZED -> {
-                        if (window.isFullscreen()) {
-                            window.toggleFullScreen();
-                        }
-                        GLFW.glfwRestoreWindow(window.handle());
-                        GLFW.glfwSetWindowAttrib(window.handle(),
-                                GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE);
-                        GLFW.glfwMaximizeWindow(window.handle());
+                    case MAXIMIZED, MAXIMIZED_BORDERLESS -> {
+                        minecraft.options.fullscreen().set(false);
+                        org.lwjgl.sdl.SDLVideo.SDL_SetWindowFullscreen(window.handle(), false);
+                        org.lwjgl.sdl.SDLVideo.SDL_SetWindowBordered(window.handle(), this == MAXIMIZED);
+                        org.lwjgl.sdl.SDLVideo.SDL_MaximizeWindow(window.handle());
                     }
-                    case MAXIMIZED_BORDERLESS -> {
-                        if (window.isFullscreen()) {
-                            window.toggleFullScreen();
-                        }
-                        GLFW.glfwRestoreWindow(window.handle());
-                        GLFW.glfwSetWindowAttrib(window.handle(),
-                                GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
-                        GLFW.glfwMaximizeWindow(window.handle());
+                    case WINDOWED, WINDOWED_BORDERLESS -> {
+                        minecraft.options.fullscreen().set(false);
+                        org.lwjgl.sdl.SDLVideo.SDL_SetWindowFullscreen(window.handle(), false);
+                        org.lwjgl.sdl.SDLVideo.SDL_SetWindowBordered(window.handle(), this == WINDOWED);
+                        org.lwjgl.sdl.SDLVideo.SDL_RestoreWindow(window.handle());
                     }
-                    case WINDOWED -> {
-                        if (window.isFullscreen()) {
-                            window.toggleFullScreen();
-                        }
-                        GLFW.glfwSetWindowAttrib(window.handle(),
-                                GLFW.GLFW_DECORATED, GLFW.GLFW_TRUE);
-                        GLFW.glfwRestoreWindow(window.handle());
-                    }
-                    case WINDOWED_BORDERLESS -> {
-                        if (window.isFullscreen()) {
-                            window.toggleFullScreen();
-                        }
-                        GLFW.glfwSetWindowAttrib(window.handle(),
-                                GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
-                        GLFW.glfwRestoreWindow(window.handle());
-                    }
+                    default -> { }
                 }
+                window.updateFullscreenIfChanged();
             }
 
             @Nonnull
