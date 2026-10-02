@@ -20,8 +20,9 @@ package icyllis.modernui.mc.mixin;
 
 import com.mojang.renderpearl.api.buffers.GpuBuffer;
 import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
-import com.mojang.renderpearl.api.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.pipeline.IndexType;
 import com.mojang.renderpearl.api.vertex.VertexFormat;
 import icyllis.modernui.mc.TooltipRenderer;
 import icyllis.modernui.mc.UIManager;
@@ -39,10 +40,10 @@ public class MixinGuiRenderer {
 
     @Inject(method = "executeDrawRange",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;bindDefaultUniforms" +
-                    "(Lcom/mojang/blaze3d/systems/RenderPass;)V", shift = At.Shift.AFTER, remap = false),
+                    "(Lcom/mojang/renderpearl/api/commands/RenderPass;)V", shift = At.Shift.AFTER, remap = false),
             locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onExecuteDrawRange(Supplier<String> $$0, RenderTarget $$1, GpuBufferSlice $$2, GpuBufferSlice $$3,
-                                    GpuBuffer $$4, VertexFormat.IndexType $$5, int $$6, int $$7, CallbackInfo ci,
+                                    GpuBuffer $$4, IndexType $5, int $$6, int $$7, CallbackInfo ci,
                                     RenderPass renderPass) {
         if (TooltipRenderer.sTooltip) {
             GpuBufferSlice tooltipUniforms = UIManager.getInstance().mTooltipRenderer.mUniforms;
