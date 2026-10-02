@@ -26,7 +26,6 @@ import icyllis.modernui.text.method.WordIterator;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.Util;
-import org.lwjgl.glfw.GLFW;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -209,7 +208,7 @@ public abstract class MixinEditBox implements IModernEditBox {
             cancellable = true)
     public void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         int i = event.key();
-        if (i == GLFW.GLFW_KEY_Z || i == GLFW.GLFW_KEY_Y) {
+        if (i == InputConstants.KEY_Z || i == InputConstants.KEY_Y) {
             if (event.hasControlDownWithQuirk() && !event.hasAltDown()) {
                 if (!event.hasShiftDown()) {
                     UndoOwner[] owners = {modernUI_MC$undoOwner()};
