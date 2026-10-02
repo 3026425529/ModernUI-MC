@@ -36,7 +36,6 @@ import icyllis.modernui.view.Gravity;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.lwjgl.system.Callback;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
@@ -49,7 +48,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static org.lwjgl.opengl.GL33C.*;
 import static icyllis.modernui.mc.ModernUIMod.LOGGER;
@@ -350,11 +348,7 @@ public class TestMain {
                 sWindow.close();
             }
             AudioManager.getInstance().close();
-            Stream.of(glfwSetMonitorCallback(null),
-                            glfwSetErrorCallback(null))
-                    .filter(Objects::nonNull)
-                    .forEach(Callback::free);
-            glfwTerminate();
+
             LOGGER.info(MARKER, "Stopped");
         }
     }
@@ -472,7 +466,7 @@ public class TestMain {
         framebuffer.addRenderbufferAttachment(GL_STENCIL_ATTACHMENT, GL_STENCIL_INDEX8);
         framebuffer.setDrawBuffer(GL_COLOR_ATTACHMENT0);*/
 
-        glfwShowWindow(window.getHandle());
+        
 
         boolean note = false;
 
