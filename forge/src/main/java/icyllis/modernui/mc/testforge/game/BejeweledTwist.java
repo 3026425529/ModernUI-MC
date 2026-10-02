@@ -33,7 +33,7 @@ import icyllis.modernui.util.IntProperty;
 import icyllis.modernui.view.Gravity;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import org.lwjgl.glfw.GLFW;
+
 import org.lwjgl.system.Callback;
 
 import javax.annotation.Nonnull;
@@ -44,7 +44,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static org.lwjgl.glfw.GLFW.*;
+
 import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL13C.GL_MULTISAMPLE;
 
