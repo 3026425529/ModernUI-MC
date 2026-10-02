@@ -53,7 +53,6 @@ import java.util.stream.Stream;
 
 import static org.lwjgl.opengl.GL33C.*;
 import static icyllis.modernui.mc.ModernUIMod.LOGGER;
-import static org.lwjgl.glfw.GLFW.*;
 
 @Deprecated
 public class TestMain {
