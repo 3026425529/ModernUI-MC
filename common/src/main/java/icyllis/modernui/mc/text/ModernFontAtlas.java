@@ -25,7 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.renderpearl.api.textures.AddressMode;
 import com.mojang.renderpearl.api.textures.FilterMode;
 import com.mojang.renderpearl.api.textures.GpuTexture;
-import com.mojang.renderpearl.api.textures.TextureFormat;
+import com.mojang.renderpearl.api.GpuFormat;
 import icyllis.arc3d.core.MathUtil;
 import icyllis.arc3d.core.Rect2i;
 import icyllis.arc3d.core.RectanglePacker;
@@ -377,8 +377,8 @@ public class ModernFontAtlas extends AbstractTexture implements Dumpable {
                 "ModernUI_MC_FontAtlas" + mMaskFormat,
                 GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING,
                 switch (mMaskFormat) {
-                    case Engine.MASK_FORMAT_A8 -> TextureFormat.RED8;
-                    case Engine.MASK_FORMAT_ARGB -> TextureFormat.RGBA8;
+                    case Engine.MASK_FORMAT_A8 -> GpuFormat.R8_UNORM;
+                    case Engine.MASK_FORMAT_ARGB -> GpuFormat.RGBA8_UNORM;
                     default -> throw new AssertionError(mMaskFormat);
                 },
                 mWidth, mHeight,
