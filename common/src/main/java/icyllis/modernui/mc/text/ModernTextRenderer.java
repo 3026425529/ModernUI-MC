@@ -101,7 +101,7 @@ public final class ModernTextRenderer {
     }
 
     public float drawText(@Nonnull FormattedText text, float x, float y, int color, boolean dropShadow,
-                          @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source,
+                          @Nonnull Matrix4fc matrix, @Nonnull LegacyTextBufferSource source,
                           Font.DisplayMode displayMode, int colorBackground, int packedLight) {
         if (text == CommonComponents.EMPTY || text == FormattedText.EMPTY) {
             return x;
@@ -113,7 +113,7 @@ public final class ModernTextRenderer {
     }
 
     public float drawText(@Nonnull FormattedCharSequence text, float x, float y, int color, boolean dropShadow,
-                          @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source,
+                          @Nonnull Matrix4fc matrix, @Nonnull LegacyTextBufferSource source,
                           Font.DisplayMode displayMode, int colorBackground, int packedLight) {
         if (text == FormattedCharSequence.EMPTY) {
             return x;
@@ -125,7 +125,7 @@ public final class ModernTextRenderer {
     }
 
     public float drawText(@Nonnull TextLayout layout, float x, float y, int color, boolean dropShadow,
-                          @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source,
+                          @Nonnull Matrix4fc matrix, @Nonnull LegacyTextBufferSource source,
                           Font.DisplayMode displayMode, int colorBackground, int packedLight) {
         // ensure alpha, color can be ARGB, or can be RGB
         // we check if alpha <= 1, then make alpha = 255 (fully opaque)
@@ -141,9 +141,9 @@ public final class ModernTextRenderer {
         int mode = chooseMode(matrix, displayMode);
         boolean polygonOffset = displayMode == Font.DisplayMode.POLYGON_OFFSET;
 
-        /*if (layout.hasColorEmoji() && source instanceof MultiBufferSource.BufferSource) {
+        /*if (layout.hasColorEmoji() && source instanceof LegacyTextBufferSource.BufferSource) {
             // performance impact
-            ((MultiBufferSource.BufferSource) source).endBatch(Sheets.signSheet());
+            ((LegacyTextBufferSource.BufferSource) source).endBatch(Sheets.signSheet());
         }*/
         // copy the matrix when needed
         //boolean matrixIsCopied = false;
@@ -232,7 +232,7 @@ public final class ModernTextRenderer {
 
     /*public static void drawText8xOutline(@Nonnull FormattedText text, float x, float y,
                                          int color, int outlineColor, @Nonnull Matrix4f matrix,
-                                         @Nonnull MultiBufferSource source) {
+                                         @Nonnull LegacyTextBufferSource source) {
         if (text == CommonComponents.EMPTY || text == FormattedText.EMPTY) {
             return;
         }
@@ -252,9 +252,9 @@ public final class ModernTextRenderer {
         TextLayoutEngine engine = TextLayoutEngine.getInstance();
         TextLayout layout = engine.lookupComplexLayout(text);
         float resLevel = engine.getResLevel();
-        if (layout.hasColorBitmap() && source instanceof MultiBufferSource.BufferSource) {
+        if (layout.hasColorBitmap() && source instanceof LegacyTextBufferSource.BufferSource) {
             // performance impact
-            ((MultiBufferSource.BufferSource) source).endBatch(Sheets.signSheet());
+            ((LegacyTextBufferSource.BufferSource) source).endBatch(Sheets.signSheet());
         }
 
         matrix = new Matrix4f(matrix);
@@ -267,7 +267,7 @@ public final class ModernTextRenderer {
 
     public void drawText8xOutline(@Nonnull FormattedCharSequence text, float x, float y,
                                   int color, int outlineColor, @Nonnull Matrix4fc matrix,
-                                  @Nonnull MultiBufferSource source, int packedLight) {
+                                  @Nonnull LegacyTextBufferSource source, int packedLight) {
         if (text == FormattedCharSequence.EMPTY) {
             return;
         }
@@ -282,9 +282,9 @@ public final class ModernTextRenderer {
         int b = color & 0xff;
 
         TextLayout layout = mEngine.lookupFormattedLayout(text);
-        /*if (layout.hasColorEmoji() && source instanceof MultiBufferSource.BufferSource) {
+        /*if (layout.hasColorEmoji() && source instanceof LegacyTextBufferSource.BufferSource) {
             // performance impact
-            ((MultiBufferSource.BufferSource) source).endBatch(Sheets.signSheet());
+            ((LegacyTextBufferSource.BufferSource) source).endBatch(Sheets.signSheet());
         }*/
 
         layout.drawText(matrix, source, x, y, r, g, b, a, false,
@@ -363,7 +363,7 @@ public final class ModernTextRenderer {
     /*@Override
     public int drawInBatch(@Nonnull String text, float x, float y, int color, boolean dropShadow,
                            @NotNull Matrix4f matrix,
-                           @Nonnull MultiBufferSource buffer, boolean seeThrough, int colorBackground,
+                           @Nonnull LegacyTextBufferSource buffer, boolean seeThrough, int colorBackground,
                            int packedLight, boolean bidiFlag) {
         if (mGlobalRenderer) {
             // bidiFlag is useless, we have our layout system
@@ -378,7 +378,7 @@ public final class ModernTextRenderer {
     @Override
     public int drawInBatch(@Nonnull Component text, float x, float y, int color, boolean dropShadow,
                            @Nonnull Matrix4f matrix,
-                           @Nonnull MultiBufferSource buffer, boolean seeThrough, int colorBackground,
+                           @Nonnull LegacyTextBufferSource buffer, boolean seeThrough, int colorBackground,
                            int packedLight) {
         if (mGlobalRenderer) {
             v.setValue(x);
@@ -398,7 +398,7 @@ public final class ModernTextRenderer {
     // compatibility layer
     public void drawText(@Nonnull FormattedText text, float x, float y, int color, boolean dropShadow,
                          @Nonnull Matrix4f matrix,
-                         @Nonnull MultiBufferSource buffer, boolean seeThrough, int colorBackground, int packedLight) {
+                         @Nonnull LegacyTextBufferSource buffer, boolean seeThrough, int colorBackground, int packedLight) {
         if (mGlobalRenderer) {
             v.setValue(x);
             // iterate all siblings
@@ -417,7 +417,7 @@ public final class ModernTextRenderer {
     @Override
     public int drawInBatch(@Nonnull FormattedCharSequence text, float x, float y, int color, boolean dropShadow,
                            @Nonnull Matrix4f matrix,
-                           @Nonnull MultiBufferSource buffer, boolean seeThrough, int colorBackground,
+                           @Nonnull LegacyTextBufferSource buffer, boolean seeThrough, int colorBackground,
                            int packedLight) {
         if (mGlobalRenderer && text.accept((index, style, codePoint) -> !style.getFont().equals(Minecraft.ALT_FONT))) {
             v.setValue(x);
@@ -437,7 +437,7 @@ public final class ModernTextRenderer {
 
     /*public float drawLayer(@Nonnull CharSequence text, float x, float y, int color, boolean dropShadow, Matrix4f
     matrix,
-                           @Nonnull MultiBufferSource buffer, boolean seeThrough, int colorBackground,
+                           @Nonnull LegacyTextBufferSource buffer, boolean seeThrough, int colorBackground,
                            int packedLight, Style style) {
         if (text.length() == 0)
             return 0;

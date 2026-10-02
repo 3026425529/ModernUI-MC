@@ -587,7 +587,7 @@ public class TextLayout {
      */
     @SuppressWarnings("UnnecessaryLocalVariable")
     public void drawTextOutline(@Nonnull Matrix4fc matrix,
-                                @Nonnull MultiBufferSource source,
+                                @Nonnull LegacyTextBufferSource source,
                                 final float x, final float top,
                                 int r, int g, int b, int a,
                                 int packedLight) {

@@ -504,17 +504,17 @@ public class TextLayoutEngine extends FontResourceManager
             }
             for (var e : fontSets.entrySet()) {
                 if (e.getKey().equals(Minecraft.DEFAULT_FONT) ||
-                        e.getKey().equals(Minecraft.UNIFORM_FONT)) {
+                        e.getKey().equals(UNIFORM_FONT)) {
                     continue;
                 }
                 if (e.getValue() instanceof StandardFontSet standardFontSet) {
                     standardFontSet.invalidateCache(mResLevel);
                 }
             }
-            if (!fontSets.containsKey(Minecraft.UNIFORM_FONT)) {
-                var fontSet = new StandardFontSet(Minecraft.getInstance().getTextureManager(), Minecraft.UNIFORM_FONT);
+            if (!fontSets.containsKey(UNIFORM_FONT)) {
+                var fontSet = new StandardFontSet(Minecraft.getInstance().getTextureManager(), UNIFORM_FONT);
                 fontSet.reload(ModernUI.getSelectedTypeface(), mResLevel);
-                fontSets.put(Minecraft.UNIFORM_FONT, fontSet);
+                fontSets.put(UNIFORM_FONT, fontSet);
             }
         }
 
@@ -747,7 +747,7 @@ public class TextLayoutEngine extends FontResourceManager
     }
 
     private static boolean isUnicodeFont(@Nonnull Identifier name) {
-        if (name.equals(Minecraft.UNIFORM_FONT)) {
+        if (name.equals(UNIFORM_FONT)) {
             return true;
         }
         if (name.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
@@ -1239,7 +1239,7 @@ public class TextLayoutEngine extends FontResourceManager
     public FontCollection getFontCollection(@Nonnull Identifier fontName) {
         if (mForceUnicodeFont == Boolean.TRUE &&
                 fontName.equals(Minecraft.DEFAULT_FONT)) {
-            fontName = Minecraft.UNIFORM_FONT;
+            fontName = UNIFORM_FONT;
         }
         FontCollection fontCollection;
         return (fontCollection = mFontCollections.get(fontName)) != null

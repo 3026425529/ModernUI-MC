@@ -242,7 +242,7 @@ public abstract class GlyphRender {
         }
 
         @Override
-        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source, @Nullable CharSequence input,
+        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull LegacyTextBufferSource source, @Nullable CharSequence input,
                               float x, float y, int r, int g, int b, int a, boolean seeThrough, int light, float res) {
             GLBakedGlyph glyph = mGlyph;
             if (glyph == null) {
@@ -355,7 +355,7 @@ public abstract class GlyphRender {
         }
 
         @Override
-        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source, @Nullable CharSequence input,
+        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull LegacyTextBufferSource source, @Nullable CharSequence input,
                               float x, float y, int r, int g, int b, int a, boolean seeThrough, int light, float res) {
             int idx = input != null ? input.charAt(mStringIndex) - '0' : 0;
             if (idx < 0 || idx >= 10)
@@ -389,7 +389,7 @@ public abstract class GlyphRender {
         }
 
         @Override
-        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source, @Nonnull CharSequence input,
+        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull LegacyTextBufferSource source, @Nonnull CharSequence input,
         float x,
                               float y, int r, int g, int b, int a, boolean seeThrough, int light, float res) {
             mDigits[input.charAt(mStringIndex) - 48].drawGlyph(matrix, source, x + mOffsetX, y, r, g, b, a, seeThrough,
@@ -471,7 +471,7 @@ public abstract class GlyphRender {
         }
 
         @Override
-        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source, @Nullable CharSequence input,
+        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull LegacyTextBufferSource source, @Nullable CharSequence input,
                               float x, float y, int r, int g, int b, int a, boolean seeThrough, int light, float res) {
             int idx = RANDOM.nextInt(mGlyphs.getKey().length);
             GLBakedGlyph glyph = mGlyphs.getKey()[idx];
@@ -503,7 +503,7 @@ public abstract class GlyphRender {
         }
 
         @Override
-        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source, @Nonnull CharSequence input,
+        public void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull LegacyTextBufferSource source, @Nonnull CharSequence input,
         float x, float y, int r, int g, int b, int a, boolean seeThrough, int light, float res) {
             glyphs[RANDOM.nextInt(glyphs.length)].drawGlyph(matrix, source, x + mOffsetX, y, r, g, b, a, seeThrough,
             light);
