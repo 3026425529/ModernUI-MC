@@ -94,7 +94,6 @@ import java.io.PrintWriter;
 import java.util.*;
 
 import static icyllis.modernui.mc.ModernUIMod.LOGGER;
-import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Manage UI thread and connect Minecraft to Modern UI view system at most bottom level.
@@ -540,8 +539,8 @@ public abstract class UIManager implements LifecycleOwner {
             if (minecraft.hasControlDown()) {
                 mods |= KeyEvent.META_CONTROL_ON;
             }
-            if (InputConstants.isKeyDown(window, InputConstants.KEY_LSUPER) ||
-                    InputConstants.isKeyDown(window, InputConstants.KEY_RSUPER)) {
+            if (InputConstants.isKeyDown(InputConstants.KEY_LGUI) ||
+                    InputConstants.isKeyDown(InputConstants.KEY_RGUI)) {
                 mods |= KeyEvent.META_SUPER_ON;
             }
             if (minecraft.hasShiftDown()) {
@@ -558,25 +557,33 @@ public abstract class UIManager implements LifecycleOwner {
     public void onPostMouseInput(int button, int action, int mods) {
         // We should ensure (overlay == null && screen != null)
         // and the screen must be a mui screen
-        if (minecraft.getOverlay() == null && mScreen != null) {
+        if (minecraft.gui.overlay() == null && mScreen != null) {
             //ModernUI.LOGGER.info(MARKER, "Button: {} {} {}", event.getButton(), event.getAction(), event.getMods());
             final long now = Core.timeNanos();
             float x = (float) (minecraft.mouseHandler.xpos() *
                     minecraft.getWindow().getWidth() / minecraft.getWindow().getScreenWidth());
             float y = (float) (minecraft.mouseHandler.ypos() *
                     minecraft.getWindow().getHeight() / minecraft.getWindow().getScreenHeight());
-            int buttonState = 0;
-            for (int i = 0; i < 5; i++) {
-                if (glfwGetMouseButton(minecraft.getWindow().handle(), i) == GLFW_PRESS) {
-                    buttonState |= 1 << i;
-                }
+            // SDL numbers mouse buttons from 1 and orders right/middle differently than GLFW.
+            int actionButton = switch (button) {
+                case 1 -> 1; // left / primary
+                case 3 -> 2; // right / secondary
+                case 2 -> 4; // middle / tertiary
+                case 4 -> 8; // back
+                case 5 -> 16; // forward
+                default -> 0;
+            };
+            if (actionButton == 0) {
+                return;
             }
+            int buttonState = action == InputConstants.PRESS
+                    ? mButtonState | actionButton
+                    : mButtonState & ~actionButton;
             mButtonState = buttonState;
-            int hoverAction = action == GLFW_PRESS ?
+            int hoverAction = action == InputConstants.PRESS ?
                     MotionEvent.ACTION_BUTTON_PRESS : MotionEvent.ACTION_BUTTON_RELEASE;
-            int touchAction = action == GLFW_PRESS ?
+            int touchAction = action == InputConstants.PRESS ?
                     MotionEvent.ACTION_DOWN : MotionEvent.ACTION_UP;
-            int actionButton = 1 << button;
             MotionEvent ev = MotionEvent.obtain(now, hoverAction, actionButton,
                     x, y, mods, buttonState, 0);
             mRoot.enqueueInputEvent(ev);
@@ -604,31 +611,31 @@ public abstract class UIManager implements LifecycleOwner {
 
     protected void onPreKeyInput(int action, net.minecraft.client.input.KeyEvent event) {
         if (TooltipRenderer.sTooltip) {
-            if (action != GLFW_RELEASE) {
+            if (action != InputConstants.RELEASE) {
                 switch (event.key()) {
-                    case GLFW_KEY_UP -> mTooltipRenderer.updateArrowMovement(-1);
-                    case GLFW_KEY_DOWN -> mTooltipRenderer.updateArrowMovement(1);
+                    case InputConstants.KEY_UP -> mTooltipRenderer.updateArrowMovement(-1);
+                    case InputConstants.KEY_DOWN -> mTooltipRenderer.updateArrowMovement(1);
                 }
             }
         }
         if (!event.hasControlDownWithQuirk() || !event.hasShiftDown() || !ModernUIMod.isDeveloperMode()) {
             return;
         }
-        if (action == GLFW_PRESS) {
+        if (action == InputConstants.PRESS) {
             switch (event.key()) {
-                case GLFW_KEY_Y -> takeScreenshot();
+                case InputConstants.KEY_Y -> takeScreenshot();
                 //case GLFW_KEY_H -> open(new TestFragment());
                 //case GLFW_KEY_J -> open(new TestPauseFragment());
-                case GLFW_KEY_U -> {
+                case InputConstants.KEY_U -> {
                     mClearNextMainTarget = true;
                 }
-                case GLFW_KEY_I -> {
+                case InputConstants.KEY_I -> {
                     mTestChars ^= true;
                 }
-                case GLFW_KEY_N -> mDecor.postInvalidate();
-                case GLFW_KEY_P -> dump();
-                case GLFW_KEY_M -> changeRadialBlur();
-                case GLFW_KEY_T -> {
+                case InputConstants.KEY_N -> mDecor.postInvalidate();
+                case InputConstants.KEY_P -> dump();
+                case InputConstants.KEY_M -> changeRadialBlur();
+                case InputConstants.KEY_T -> {
                     /*String text = "\u09b9\u09cd\u09af\u09be\n\u09b2\u09cb" + ChatFormatting.RED + "\uD83E\uDD14" +
                             ChatFormatting.BOLD + "\uD83E\uDD14\uD83E\uDD14";
                     for (int i = 1; i <= 10; i++) {
@@ -655,7 +662,7 @@ public abstract class UIManager implements LifecycleOwner {
                         }*/
                     }
                 }
-                case GLFW_KEY_G -> {
+                case InputConstants.KEY_G -> {
                 /*if (minecraft.screen == null && minecraft.isLocalServer() &&
                         minecraft.getSingleplayerServer() != null && !minecraft.getSingleplayerServer().isPublished()) {
                     start(new TestPauseUI());
@@ -667,21 +674,20 @@ public abstract class UIManager implements LifecycleOwner {
                             GlyphManager.getInstance().debug();
                         }
                 }
-                case GLFW_KEY_V -> {
+                case InputConstants.KEY_V -> {
                     if (ModernUIMod.isTextEngineEnabled()) {
                         //TextLayoutEngine.getInstance().dumpEmojiAtlas();
                         TextLayoutEngine.getInstance().dumpBitmapFonts();
                     }
                 }
-                case GLFW_KEY_O -> mNoRender = !mNoRender;
-                case GLFW_KEY_F -> System.gc();
+                case InputConstants.KEY_O -> mNoRender = !mNoRender;
+                case InputConstants.KEY_F -> System.gc();
             }
         }
     }
 
     public void onGameLoadFinished() {
         if (sDingEnabled) {
-            glfwRequestWindowAttention(minecraft.getWindow().handle());
             final String sound = sDingSound;
             final float volume = sDingVolume;
             if (volume > 0) {
@@ -788,7 +794,7 @@ public abstract class UIManager implements LifecycleOwner {
         if (minecraft.gameRenderer.currentPostEffect() == null) {
             LOGGER.info(MARKER, "Load post-processing effect");
             final Identifier effect;
-            if (InputConstants.isKeyDown(minecraft.getWindow(), GLFW_KEY_RIGHT_SHIFT)) {
+            if (InputConstants.isKeyDown(minecraft.getWindow(), InputConstants.KEY_RIGHT_SHIFT)) {
                 effect = ModernUIMod.location("grayscale");
             } else {
                 effect = ModernUIMod.location("radial_blur");
@@ -1078,7 +1084,7 @@ public abstract class UIManager implements LifecycleOwner {
         mRoot.mHandler.post(this::restoreLayoutTransition);
         mRoot.mRawDrawHandlers.clear();
         mScreen = null;
-        glfwSetCursor(minecraft.getWindow().handle(), MemoryUtil.NULL);
+        // SDL mouse cursor is managed by Minecraft.
         minecraft.textInputManager().stopTextInput(screen);
     }
 
@@ -1132,7 +1138,7 @@ public abstract class UIManager implements LifecycleOwner {
 
     public void renderAbove(GuiRenderState guiRenderState) {
         if (minecraft.isRunning() && mRunning &&
-                mScreen == null && minecraft.getOverlay() == null) {
+                mScreen == null && minecraft.gui.overlay() == null) {
             // Render the UI above everything
             render(new GuiGraphicsExtractor(minecraft, guiRenderState, 0, 0), 0, 0, 0);
         }
@@ -1466,8 +1472,7 @@ public abstract class UIManager implements LifecycleOwner {
 
         @MainThread
         protected void applyPointerIcon(int pointerType) {
-            minecraft.schedule(() -> glfwSetCursor(minecraft.getWindow().handle(),
-                    PointerIcon.getSystemIcon(pointerType).getHandle()));
+            // PointerIcon handles are GLFW native handles and cannot be passed to SDL.
         }
 
         @Override
