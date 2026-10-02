@@ -18,11 +18,11 @@
 
 package icyllis.modernui.mc.mixin;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import icyllis.modernui.mc.TooltipRenderer;
 import icyllis.modernui.mc.UIManager;
 import net.minecraft.client.gui.render.GuiRenderer;

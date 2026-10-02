@@ -18,9 +18,9 @@
 
 package icyllis.modernui.mc.b3d;
 
-import com.mojang.blaze3d.opengl.GlConst;
-import com.mojang.blaze3d.opengl.GlTexture;
-import com.mojang.blaze3d.textures.TextureFormat;
+import com.mojang.renderpearl.backend.opengl.GlConst;
+import com.mojang.renderpearl.backend.opengl.GlTexture;
+import com.mojang.renderpearl.api.textures.TextureFormat;
 import icyllis.arc3d.core.SharedPtr;
 import icyllis.arc3d.engine.Engine;
 

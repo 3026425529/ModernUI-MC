@@ -19,8 +19,8 @@
 package icyllis.modernui.mc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import icyllis.arc3d.core.RawPtr;
 import icyllis.arc3d.engine.Swizzle;
 import icyllis.arc3d.vulkan.VKUtil;
