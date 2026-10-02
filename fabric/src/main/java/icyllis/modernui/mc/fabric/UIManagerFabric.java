@@ -29,6 +29,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.input.KeyEvent;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 
 import static icyllis.modernui.mc.ModernUIMod.LOGGER;
-import static org.lwjgl.glfw.GLFW.*;
 
 @ApiStatus.Internal
 public final class UIManagerFabric extends UIManager {
@@ -69,7 +69,7 @@ public final class UIManagerFabric extends UIManager {
         if (!minecraft.isSameThread()) {
             throw new IllegalStateException("Not called from main thread");
         }
-        minecraft.setScreen(new SimpleScreen(fragment, null, null, CommonComponents.EMPTY));
+        minecraft.gui.setScreen(new SimpleScreen(fragment, null, null, CommonComponents.EMPTY));
     }
 
     @Override
@@ -83,7 +83,7 @@ public final class UIManagerFabric extends UIManager {
                 onHoverMove(false);
             }
             // for non-mui screens
-            if (mScreen == null && minecraft.screen == null) {
+            if (mScreen == null && minecraft.gui.screen() == null) {
                 //mTicks = 0;
                 mElapsedTimeMillis = 0;
             }
@@ -93,10 +93,10 @@ public final class UIManagerFabric extends UIManager {
 
     @Override
     protected void onPreKeyInput(int action, KeyEvent event) {
-        if (action == GLFW_PRESS) {
-            if (minecraft.screen == null ||
-                    minecraft.screen.shouldCloseOnEsc() ||
-                    minecraft.screen instanceof TitleScreen) {
+        if (action == InputConstants.PRESS) {
+            if (minecraft.gui.screen() == null ||
+                    minecraft.gui.screen().shouldCloseOnEsc() ||
+                    minecraft.gui.screen() instanceof TitleScreen) {
                 if (event.hasControlDownWithQuirk() && OPEN_CENTER_KEY.matches(event)) {
                     open(new CenterFragment2());
                     return;
