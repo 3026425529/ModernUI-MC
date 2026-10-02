@@ -20,6 +20,12 @@ package icyllis.modernui.mc.b3d;
 
 import com.mojang.renderpearl.backend.opengl.GlConst;
 import com.mojang.renderpearl.backend.opengl.GlTexture;
+import com.mojang.renderpearl.backend.opengl.FrameBufferCache;
+import com.mojang.renderpearl.backend.api.GpuDeviceBackend;
+import com.mojang.renderpearl.frontend.FrontendGpuDevice;
+import com.mojang.blaze3d.systems.RenderSystem;
+import icyllis.modernui.mc.mixin.AccessFrontendGpuDevice;
+import icyllis.modernui.mc.mixin.AccessGlDevice;
 import com.mojang.renderpearl.api.GpuFormat;
 import icyllis.arc3d.core.SharedPtr;
 import icyllis.arc3d.engine.Engine;
@@ -40,13 +46,25 @@ public class GlTexture_Wrapped extends GlTexture {
                 source.getGLFormat() == GlConst.GL_RGBA8 ? GpuFormat.RGBA8_UNORM : GpuFormat.R8_UNORM,
                 source.getWidth(), source.getHeight(),
                 /*depthOrLayers*/ 1, source.getMipLevelCount(),
-                source.getHandle());
+                source.getHandle(), getFrameBufferCache());
         assert source.getImageType() == Engine.ImageType.k2D;
         assert source.getGLFormat() == GlConst.GL_RGBA8 || source.getGLFormat() == GlConst.GL_R8;
         assert source.getDepth() == 1;
         assert source.getArraySize() == 1;
         assert source.getSampleCount() == 1;
         this.source = source; // move
+    }
+
+    private static FrameBufferCache getFrameBufferCache() {
+        var device = RenderSystem.getDevice();
+        if (!(device instanceof AccessFrontendGpuDevice frontend)) {
+            throw new IllegalStateException("Unexpected Renderpearl GPU device: " + device.getClass());
+        }
+        GpuDeviceBackend backend = frontend.modernui$getBackend();
+        if (!(backend instanceof AccessGlDevice glDevice)) {
+            throw new IllegalStateException("An OpenGL texture was created with a non-OpenGL backend: " + backend.getClass());
+        }
+        return glDevice.modernui$getFrameBufferCache();
     }
 
     @Override
