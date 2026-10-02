@@ -203,10 +203,10 @@ final class EventHandler {
                     ModernUIMod.location("keybind"));
             UIManagerForge.OPEN_CENTER_KEY = new KeyMapping(
                     "key.modernui.openCenter", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL,
-                    InputConstants.KEY_K, UIManagerForge.KEYBIND_CATEGORY);
+                    InputConstants.Type.KEYSYM, InputConstants.KEY_K, UIManagerForge.KEYBIND_CATEGORY);
             UIManagerForge.ZOOM_KEY = new KeyMapping(
                     "key.modernui.zoom", KeyConflictContext.IN_GAME, KeyModifier.NONE,
-                    InputConstants.KEY_C, UIManagerForge.KEYBIND_CATEGORY);
+                    InputConstants.Type.KEYSYM, InputConstants.KEY_C, UIManagerForge.KEYBIND_CATEGORY);
 
             event.register(UIManagerForge.OPEN_CENTER_KEY);
             event.register(UIManagerForge.ZOOM_KEY);
