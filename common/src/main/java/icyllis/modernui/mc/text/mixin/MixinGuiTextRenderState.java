@@ -30,11 +30,15 @@ import org.joml.Matrix3x2fc;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GuiTextRenderState.class)
-public class MixinGuiTextRenderState {
+public abstract class MixinGuiTextRenderState {
+
+    @Accessor("text")
+    public abstract FormattedCharSequence modernui$getText();
 
     @Shadow
     @Final

@@ -24,7 +24,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import icyllis.modernui.graphics.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.FormattedText;
@@ -90,7 +89,7 @@ public final class ModernTextRenderer {
     }
 
     public float drawText(@Nonnull String text, float x, float y, int color, boolean dropShadow,
-                          @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source,
+                          @Nonnull Matrix4fc matrix, @Nonnull LegacyTextBufferSource source,
                           Font.DisplayMode displayMode, int colorBackground, int packedLight) {
         if (text.isEmpty()) {
             return x;

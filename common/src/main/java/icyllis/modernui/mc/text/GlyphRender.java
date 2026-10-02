@@ -122,7 +122,7 @@ public abstract class GlyphRender {
      * @param light      packed light
      * @param res        resolution level
      */
-    /*public abstract void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source,
+    /*public abstract void drawGlyph(@Nonnull Matrix4f matrix, @Nonnull LegacyTextBufferSource source,
                                    @Nullable CharSequence input, float x, float y, int r, int g, int b, int a,
                                    boolean seeThrough, int light, float res);*/
 

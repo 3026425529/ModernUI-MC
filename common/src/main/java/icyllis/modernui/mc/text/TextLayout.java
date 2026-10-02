@@ -23,7 +23,6 @@ import icyllis.modernui.graphics.MathUtil;
 import icyllis.modernui.graphics.text.Font;
 import icyllis.modernui.util.SparseArray;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -315,7 +314,7 @@ public class TextLayout {
      * @return the total advance, always positive
      */
     public float drawText(@Nonnull final Matrix4fc matrix,
-                          @Nonnull final MultiBufferSource source,
+                          @Nonnull final LegacyTextBufferSource source,
                           float x, float top,
                           int r, int g, int b, final int a,
                           final boolean isShadow, int preferredMode,

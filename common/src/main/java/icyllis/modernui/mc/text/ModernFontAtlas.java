@@ -29,13 +29,11 @@ import icyllis.arc3d.core.MathUtil;
 import icyllis.arc3d.core.Rect2i;
 import icyllis.arc3d.core.RectanglePacker;
 import icyllis.arc3d.engine.Engine;
-import icyllis.arc3d.engine.Swizzle;
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
 import icyllis.modernui.annotation.RenderThread;
 import icyllis.modernui.core.Core;
 import icyllis.modernui.mc.ModernUIMod;
-import icyllis.modernui.mc.VulkanModIntegration;
 import icyllis.modernui.text.TextUtils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -326,29 +324,8 @@ public class ModernFontAtlas extends AbstractTexture implements Dumpable {
         assert texture != null && textureView == null;
         textureView = RenderSystem.getDevice().createTextureView(texture);
 
-        if (mMaskFormat == Engine.MASK_FORMAT_A8) {
-            // Minecraft's OpenGL backend has no real texture view,
-            // but if on Vulkan, we have to modify the VkImageView
-            switch (RenderSystem.getDevice().getBackendName()) {
-                case "OpenGL" -> {
-                    int boundTexture = glGetInteger(GL_TEXTURE_BINDING_2D);
-                    glBindTexture(GL_TEXTURE_2D, ((GlTexture) texture).glId());
-
-                    //XXX: un-premultiplied, so 111r rather than rrrr
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ONE);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_RED);
-
-                    glBindTexture(GL_TEXTURE_2D, boundTexture);
-                }
-                case "Vulkan" -> {
-                    if (ModernUIMod.isVulkanModLoaded()) {
-                        VulkanModIntegration.replaceMainImageViewWithSwizzle(textureView, Swizzle.make("111r"));
-                    }
-                }
-            }
-        }
+        // Minecraft 26.3 does not expose mutable texture-view swizzles through
+        // the common GPU API. Keep atlas uploads backend independent.
 
         return true;
     }

@@ -81,6 +81,8 @@ public class TextLayoutEngine extends FontResourceManager
 
     public static final Marker MARKER = MarkerManager.getMarker("TextLayout");
 
+    private static final Identifier UNIFORM_FONT = Identifier.withDefaultNamespace("uniform");
+
     /**
      * Config values
      */
@@ -497,7 +499,7 @@ public class TextLayoutEngine extends FontResourceManager
             if (fontSets.get(Minecraft.DEFAULT_FONT) instanceof StandardFontSet standardFontSet) {
                 standardFontSet.reload(mFontCollections.get(Minecraft.DEFAULT_FONT), mResLevel);
             }
-            if (fontSets.get(Minecraft.UNIFORM_FONT) instanceof StandardFontSet standardFontSet) {
+            if (fontSets.get(UNIFORM_FONT) instanceof StandardFontSet standardFontSet) {
                 standardFontSet.reload(ModernUI.getSelectedTypeface(), mResLevel);
             }
             for (var e : fontSets.entrySet()) {
