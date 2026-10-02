@@ -134,9 +134,9 @@ public final class UIManagerForge extends UIManager implements LifecycleOwner {
     @Override
     protected void onPreKeyInput(int action, KeyEvent event) {
         if (action == InputConstants.PRESS) {
-            if (minecraft.screen == null ||
-                    minecraft.screen.shouldCloseOnEsc() ||
-                    minecraft.screen instanceof TitleScreen) {
+            if (minecraft.gui.screen() == null ||
+                    minecraft.gui.screen().shouldCloseOnEsc() ||
+                    minecraft.gui.screen() instanceof TitleScreen) {
                 InputConstants.Key key = InputConstants.getKey(event);
                 if (OPEN_CENTER_KEY.isActiveAndMatches(key)) {
                     open(new CenterFragment2());
@@ -294,7 +294,7 @@ public final class UIManagerForge extends UIManager implements LifecycleOwner {
     @SubscribeEvent
     void onChangeFov(@Nonnull ViewportEvent.ComputeFov event) {
         boolean zoomActive = false;
-        if (sZoomEnabled && minecraft.screen == null) {
+        if (sZoomEnabled && minecraft.gui.screen() == null) {
             zoomActive = ZOOM_KEY.isDown();
         }
         if (zoomActive) {
@@ -302,7 +302,7 @@ public final class UIManagerForge extends UIManager implements LifecycleOwner {
                 mZoomMode = true;
                 mZoomSmoothCamera = minecraft.options.smoothCamera;
                 minecraft.options.smoothCamera = true;
-                minecraft.levelRenderer.needsFullRenderStateRefresh();
+                
             }
             event.setFOV(
                     event.getFOV() * 0.25f
@@ -310,7 +310,7 @@ public final class UIManagerForge extends UIManager implements LifecycleOwner {
         } else if (mZoomMode) {
             mZoomMode = false;
             minecraft.options.smoothCamera = mZoomSmoothCamera;
-            minecraft.levelRenderer.needsUpdate();
+            
         }
     }
 
