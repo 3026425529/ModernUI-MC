@@ -21,7 +21,7 @@ package icyllis.modernui.mc;
 import com.mojang.renderpearl.api.pipeline.BlendFunction;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.RenderPipeline;
-import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.renderpearl.api.pipeline.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.renderpearl.api.vertex.VertexFormat;
 import org.jetbrains.annotations.ApiStatus;
