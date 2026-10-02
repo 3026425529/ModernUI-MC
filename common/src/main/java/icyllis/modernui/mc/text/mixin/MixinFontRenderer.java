@@ -18,101 +18,67 @@
 
 package icyllis.modernui.mc.text.mixin;
 
-import icyllis.modernui.mc.text.*;
+import icyllis.modernui.mc.text.ModernPreparedText;
+import icyllis.modernui.mc.text.ModernTextRenderer;
+import icyllis.modernui.mc.text.TextLayout;
+import icyllis.modernui.mc.text.TextLayoutEngine;
+import icyllis.modernui.mc.text.TextRenderType;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import javax.annotation.Nonnull;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Font.class)
 public abstract class MixinFontRenderer {
 
-    @Unique
-    private final ModernTextRenderer modernUI_MC$textRenderer =
-            TextLayoutEngine.getInstance().getTextRenderer();
-
     @Redirect(method = "<init>", at = @At(value = "NEW",
             target = "(Lnet/minecraft/client/StringSplitter$WidthProvider;)Lnet/minecraft/client/StringSplitter;"))
-    private StringSplitter onNewSplitter(StringSplitter.WidthProvider widthProvider) {
+    private StringSplitter modernUI$createSplitter(StringSplitter.WidthProvider widthProvider) {
         return new ModernStringSplitter(TextLayoutEngine.getInstance(), widthProvider);
     }
 
-    /**
-     * @author BloCamLimb
-     * @reason Modern Text Engine
-     */
-    @Overwrite
-    public void drawInBatch(@Nonnull String text, float x, float y, int color, boolean dropShadow,
-                           @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source, Font.DisplayMode displayMode,
-                           int colorBackground, int packedLight) {
-        modernUI_MC$textRenderer.drawText(text, x, y, color, dropShadow, matrix, source,
-                displayMode, colorBackground, packedLight);
+    @Inject(
+            method = "prepareText(Lnet/minecraft/util/FormattedCharSequence;FFIZZI)Lnet/minecraft/client/gui/Font$PreparedText;",
+            at = @At("RETURN"),
+            cancellable = true
+    )
+    private void modernUI$prepareFormattedText(FormattedCharSequence text, float x, float y, int color,
+                                              boolean dropShadow, boolean includeEmpty, int backgroundColor,
+                                              CallbackInfoReturnable<Font.PreparedText> cir) {
+        if (TextLayoutEngine.sCurrentInWorldRendering) {
+            return;
+        }
+
+        TextLayout layout = TextLayoutEngine.getInstance().lookupFormattedLayout(text);
+        cir.setReturnValue(prepareModernText(layout, x, y, color, dropShadow, backgroundColor));
     }
 
-    /**
-     * @author BloCamLimb
-     * @reason Modern Text Engine
-     */
-    @Overwrite
-    public void drawInBatch(@Nonnull Component text, float x, float y, int color, boolean dropShadow,
-                           @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source, Font.DisplayMode displayMode,
-                           int colorBackground, int packedLight) {
-        modernUI_MC$textRenderer.drawText(text, x, y, color, dropShadow, matrix, source,
-                displayMode, colorBackground, packedLight);
+    @Inject(
+            method = "prepareText(Ljava/lang/String;FFIZI)Lnet/minecraft/client/gui/Font$PreparedText;",
+            at = @At("RETURN"),
+            cancellable = true
+    )
+    private void modernUI$prepareString(String text, float x, float y, int color,
+                                        boolean dropShadow, int backgroundColor,
+                                        CallbackInfoReturnable<Font.PreparedText> cir) {
+        if (TextLayoutEngine.sCurrentInWorldRendering) {
+            return;
+        }
+
+        TextLayout layout = TextLayoutEngine.getInstance().lookupVanillaLayout(text);
+        cir.setReturnValue(prepareModernText(layout, x, y, color, dropShadow, backgroundColor));
     }
 
-    /**
-     * @author BloCamLimb
-     * @reason Modern Text Engine
-     */
-    @Overwrite
-    public void drawInBatch(@Nonnull FormattedCharSequence text, float x, float y, int color, boolean dropShadow,
-                           @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source, Font.DisplayMode displayMode,
-                           int colorBackground, int packedLight) {
-        /*if (text instanceof FormattedTextWrapper)
-            // Handle Enchantment Table
-            if (((FormattedTextWrapper) text).mText.visit((style, string) -> style.getFont().equals(Minecraft
-            .ALT_FONT) ?
-                    FormattedText.STOP_ITERATION : Optional.empty(), Style.EMPTY).isPresent())
-                return callDrawInternal(text, x, y, color, dropShadow, matrix, source, seeThrough, colorBackground,
-                        packedLight);*/
-        modernUI_MC$textRenderer.drawText(text, x, y, color, dropShadow, matrix, source,
-                displayMode, colorBackground, packedLight);
-    }
-
-    /*@Invoker
-    abstract int callDrawInternal(@Nonnull FormattedCharSequence text, float x, float y, int color, boolean dropShadow,
-                                  @Nonnull Matrix4f matrix, @Nonnull MultiBufferSource source, boolean seeThrough,
-                                  int colorBackground, int packedLight);*/
-
-    /**
-     * Bidi and shaping always works no matter what language is in.
-     * So we should analyze the original string without reordering.
-     * Do not reorder, we have our layout engine.
-     *
-     * @author BloCamLimb
-     * @reason Modern Text Engine
-     */
-    @Overwrite
-    public String bidirectionalShaping(String text) {
-        return text;
-    }
-
-    /**
-     * @author BloCamLimb
-     * @reason Modern Text Engine
-     */
-    @Overwrite
-    public void drawInBatch8xOutline(@Nonnull FormattedCharSequence text, float x, float y, int color, int outlineColor,
-                                     @Nonnull Matrix4fc matrix, @Nonnull MultiBufferSource source, int packedLight) {
-        modernUI_MC$textRenderer.drawText8xOutline(text, x, y, color, outlineColor, matrix, source, packedLight);
+    private static ModernPreparedText prepareModernText(TextLayout layout, float x, float y, int color,
+                                                        boolean dropShadow, int backgroundColor) {
+        int mode = ModernTextRenderer.sAllowSDFTextIn2D
+                ? TextRenderType.MODE_SDF_FILL
+                : TextRenderType.MODE_NORMAL;
+        return layout.prepareTextWithDensity(
+                x, y, color, dropShadow, mode, 1.0f, backgroundColor, 0.0f, 0.0f);
     }
 }
