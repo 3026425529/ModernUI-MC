@@ -19,6 +19,7 @@
 package icyllis.modernui.mc.mixin;
 
 import com.ibm.icu.text.BreakIterator;
+import com.mojang.blaze3d.platform.InputConstants;
 import icyllis.modernui.core.UndoManager;
 import icyllis.modernui.core.UndoOwner;
 import icyllis.modernui.mc.*;
@@ -212,7 +213,7 @@ public abstract class MixinEditBox implements IModernEditBox {
             if (event.hasControlDownWithQuirk() && !event.hasAltDown()) {
                 if (!event.hasShiftDown()) {
                     UndoOwner[] owners = {modernUI_MC$undoOwner()};
-                    if (i == GLFW.GLFW_KEY_Z) {
+                    if (i == InputConstants.KEY_Z) {
                         // CTRL+Z
                         if (modernUI_MC$undoManager.countUndos(owners) > 0) {
                             modernUI_MC$undoManager.undo(owners, 1);
@@ -222,7 +223,7 @@ public abstract class MixinEditBox implements IModernEditBox {
                         // CTRL+Y
                         cir.setReturnValue(true);
                     }
-                } else if (i == GLFW.GLFW_KEY_Z) {
+                } else if (i == InputConstants.KEY_Z) {
                     UndoOwner[] owners = {modernUI_MC$undoOwner()};
                     if (modernUI_MC$tryRedo(owners)) {
                         // CTRL+SHIFT+Z

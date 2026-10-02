@@ -25,8 +25,6 @@ import icyllis.modernui.mc.ModernUIClient;
 import icyllis.modernui.mc.ModernUIMod;
 import icyllis.modernui.mc.MuiModApi;
 import icyllis.modernui.util.DisplayMetrics;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.Platform;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,10 +45,6 @@ public abstract class MixinWindow {
 
     @Shadow
     public abstract int getHeight();
-
-    @Shadow
-    @Nullable
-    public abstract Monitor findBestMonitor();
 
     /**
      * @author BloCamLimb
@@ -78,19 +72,7 @@ public abstract class MixinWindow {
         metrics.densityDpi = (int) (metrics.density * DisplayMetrics.DENSITY_DEFAULT);
         metrics.scaledDensity = ModernUIClient.sFontScale * metrics.density;
 
-        Monitor monitor = findBestMonitor();
-        if (monitor != null) {
-            // physical DPI is usually not necessary...
-            try {
-                int[] w = {0}, h = {0};
-                org.lwjgl.glfw.GLFW.glfwGetMonitorPhysicalSize(monitor.getMonitor(), w, h);
-                VideoMode mode = monitor.getCurrentMode();
-                metrics.xdpi = 25.4f * mode.getWidth() / w[0];
-                metrics.ydpi = 25.4f * mode.getHeight() / h[0];
-            } catch (NoSuchMethodError ignored) {
-                // the method is missing in PojavLauncher-modified GLFW
-            }
-        }
+        // SDL does not expose the legacy GLFW physical monitor size API.
         var ctx = ModernUI.getInstance();
         if (ctx != null) {
             ctx.getResources().updateConfiguration(ctx.getResources().getConfiguration(), metrics);

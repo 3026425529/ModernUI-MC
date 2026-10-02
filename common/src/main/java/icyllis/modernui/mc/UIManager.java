@@ -288,7 +288,7 @@ public abstract class UIManager implements LifecycleOwner {
                 minecraft.player.closeContainer();
             }
         } else {
-            minecraft.setScreen(screen.getPreviousScreen());
+            minecraft.gui.setScreen(screen.getPreviousScreen());
         }
     }
 
@@ -663,7 +663,7 @@ public abstract class UIManager implements LifecycleOwner {
                     }
                 }
                 case InputConstants.KEY_G -> {
-                /*if (minecraft.screen == null && minecraft.isLocalServer() &&
+                /*if (minecraft.gui.screen() == null && minecraft.isLocalServer() &&
                         minecraft.getSingleplayerServer() != null && !minecraft.getSingleplayerServer().isPublished()) {
                     start(new TestPauseUI());
                 }*/
@@ -790,20 +790,20 @@ public abstract class UIManager implements LifecycleOwner {
         }
     }*/
 
+    @Nullable
+    private Identifier mModernPostEffect;
+
     protected void changeRadialBlur() {
-        if (minecraft.gameRenderer.currentPostEffect() == null) {
-            LOGGER.info(MARKER, "Load post-processing effect");
-            final Identifier effect;
-            if (InputConstants.isKeyDown(minecraft.getWindow(), InputConstants.KEY_RIGHT_SHIFT)) {
-                effect = ModernUIMod.location("grayscale");
-            } else {
-                effect = ModernUIMod.location("radial_blur");
-            }
-            MuiModApi.get().loadEffect(minecraft.gameRenderer, effect);
-        } else {
-            LOGGER.info(MARKER, "Stop post-processing effect");
-            minecraft.gameRenderer.clearPostEffect();
+        var requested = minecraft.gameRenderer.getRequestedPostEffects();
+        if (mModernPostEffect != null) {
+            requested.remove(mModernPostEffect);
+            mModernPostEffect = null;
+            return;
         }
+        mModernPostEffect = InputConstants.isKeyDown(InputConstants.KEY_RSHIFT)
+                ? ModernUIMod.location("grayscale")
+                : ModernUIMod.location("radial_blur");
+        requested.add(mModernPostEffect);
     }
 
     public void dump() {
@@ -814,12 +814,12 @@ public abstract class UIManager implements LifecycleOwner {
         String str = builder.toString();
         if (minecraft.level != null) {
             /*try {
-                SEND_TO_CHAT.invoke(minecraft.gui.getChat(), ,
+                SEND_TO_CHAT.invoke(minecraft.gui.hud.getChat(), ,
                         0xCBD366, minecraft.gui.getGuiTicks(), false);
 
             } catch (IllegalAccessException | InvocationTargetException ignored) {
             }*/
-            minecraft.gui.getChat().addClientSystemMessage(Component.literal(str).withStyle(ChatFormatting.GRAY));
+            minecraft.gui.hud.getChat().addClientSystemMessage(Component.literal(str).withStyle(ChatFormatting.GRAY));
         }
         LOGGER.info(MARKER, str);
     }
@@ -845,7 +845,7 @@ public abstract class UIManager implements LifecycleOwner {
             pw.println((Object) null);
         }
 
-        Screen screen = minecraft.screen;
+        Screen screen = minecraft.gui.screen();
         if (screen != null) {
             pw.print("Screen: ");
             pw.println(screen.getClass());
@@ -1224,7 +1224,7 @@ public abstract class UIManager implements LifecycleOwner {
                     sb.appendCodePoint(cp++);
                 }
                 mTestCodepoint = end;
-                minecraft.gui.getChat().addClientSystemMessage(Component.literal(sb.toString()));
+                minecraft.gui.hud.getChat().addClientSystemMessage(Component.literal(sb.toString()));
             }
         }
     }
