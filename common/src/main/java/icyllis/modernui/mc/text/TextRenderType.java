@@ -61,6 +61,10 @@ public abstract class TextRenderType {
      */
     public static final int MODE_UNIFORM_SCALE = 4; // <- must be power of 2
 
+    /** Forces class initialization so all custom pipelines are registered before shader compilation. */
+    public static void initializePipelines() {
+    }
+
     public static final RenderPipeline.Snippet PIPELINE_SNIPPET = RenderPipeline.builder()
             .withVertexShader(Identifier.withDefaultNamespace("core/rendertype_text_intensity"))
             .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_normal"))
