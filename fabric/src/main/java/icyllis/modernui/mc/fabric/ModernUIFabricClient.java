@@ -31,6 +31,7 @@ import icyllis.modernui.mc.*;
 import icyllis.modernui.mc.mixin.AccessOptions;
 import icyllis.modernui.mc.text.GlyphManager;
 import icyllis.modernui.mc.text.MuiTextCommand;
+import icyllis.modernui.mc.text.TextRenderType;
 import icyllis.modernui.mc.text.TextLayoutEngine;
 import net.fabricmc.api.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -70,6 +71,9 @@ public class ModernUIFabricClient extends ModernUIClient implements ClientModIni
 
     @Override
     public void onInitializeClient() {
+        // Register ModernUI pipelines before Minecraft compiles its render pipelines.
+        TextRenderType.initializePipelines();
+
         MuiModApi.addOnRenderFrameListener((frame, stage) -> {
             if (stage == MuiModApi.RENDER_STAGE_RENDER || stage == MuiModApi.RENDER_STAGE_PRESENT) {
                 EventHandler.Client.onRenderTick();
