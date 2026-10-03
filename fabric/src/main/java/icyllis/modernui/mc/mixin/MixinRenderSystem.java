@@ -24,6 +24,7 @@ import icyllis.arc3d.engine.ContextOptions;
 import icyllis.modernui.core.Core;
 import icyllis.modernui.mc.ModernUIClient;
 import icyllis.modernui.mc.ModernUIMod;
+import icyllis.modernui.mc.MinecraftVulkanIntegration;
 import icyllis.modernui.mc.VulkanModIntegration;
 import icyllis.modernui.mc.fabric.UIManagerFabric;
 import net.minecraft.util.TimeSource;
@@ -76,8 +77,21 @@ public class MixinRenderSystem {
                     if (!Core.initVulkan(context, options)) {
                         throw new IllegalStateException("Failed to create Vulkan device");
                     }
+                } else if (MinecraftVulkanIntegration.isMinecraftVulkan(device)) {
+                    try {
+                        if (!MinecraftVulkanIntegration.initialize(device, options)) {
+                            ModernUIMod.LOGGER.error(ModernUIMod.MARKER,
+                                    "Arc3D could not initialize on Minecraft's Vulkan backend; continuing without ModernUI renderer");
+                            return;
+                        }
+                    } catch (Throwable t) {
+                        ModernUIMod.LOGGER.error(ModernUIMod.MARKER,
+                                "Arc3D initialization on Minecraft's Vulkan backend failed; continuing without ModernUI renderer", t);
+                        return;
+                    }
                 } else {
-                    throw new UnsupportedOperationException("Unknown Vulkan backend");
+                    throw new UnsupportedOperationException(
+                            "Unsupported Vulkan backend: " + device.getDeviceInfo().backendName());
                 }
             }
         }
