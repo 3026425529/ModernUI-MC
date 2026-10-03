@@ -83,6 +83,8 @@ public abstract class TextRenderType {
             .build());
 
     public static final RenderPipeline PIPELINE_GUI_NORMAL = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SNIPPET)
+            .withVertexShader(ModernUIMod.location("core/modern_text_gui"))
+            .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_gui_normal"))
             .withLocation(ModernUIMod.location("pipeline/modern_text_gui_normal"))
             .withDepthStencilState(Optional.empty())
             .build());
@@ -111,8 +113,9 @@ public abstract class TextRenderType {
             .build());
 
     public static final RenderPipeline PIPELINE_GUI_SDF = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
+            .withVertexShader(ModernUIMod.location("core/modern_text_gui"))
             .withLocation(ModernUIMod.location("pipeline/modern_text_gui_sdf"))
-            .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_sdf_fill"))
+            .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_gui_sdf"))
             .withDepthStencilState(Optional.empty())
             .build());
 
