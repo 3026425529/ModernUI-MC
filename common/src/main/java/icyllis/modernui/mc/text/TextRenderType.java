@@ -77,15 +77,15 @@ public abstract class TextRenderType {
             .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .buildSnippet();
 
-    public static final RenderPipeline PIPELINE_NORMAL = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SNIPPET)
+    public static final RenderPipeline PIPELINE_NORMAL = RenderPipeline.builder(PIPELINE_SNIPPET)
             .withLocation(ModernUIMod.location("pipeline/modern_text_normal"))
             .withDepthStencilState(DepthStencilState.DEFAULT)
-            .build();;
+            .build();
 
-    public static final RenderPipeline PIPELINE_GUI_NORMAL = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SNIPPET)
+    public static final RenderPipeline PIPELINE_GUI_NORMAL = RenderPipeline.builder(PIPELINE_SNIPPET)
             .withLocation(ModernUIMod.location("pipeline/modern_text_gui_normal"))
             .withDepthStencilState(Optional.empty())
-            .build();;
+            .build();
 
     public static final RenderPipeline.Snippet PIPELINE_SDF_SNIPPET = RenderPipeline.builder()
             .withVertexShader(Identifier.withDefaultNamespace("core/rendertype_text_intensity"))
@@ -98,23 +98,23 @@ public abstract class TextRenderType {
             .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .buildSnippet();
 
-    public static final RenderPipeline PIPELINE_SDF_FILL = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
+    public static final RenderPipeline PIPELINE_SDF_FILL = RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
             .withLocation(ModernUIMod.location("pipeline/modern_text_sdf_fill"))
             .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_sdf_fill"))
             .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -1.0F, -10.0F))
-            .build();;
+            .build();
 
-    public static final RenderPipeline PIPELINE_SDF_STROKE = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
+    public static final RenderPipeline PIPELINE_SDF_STROKE = RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
             .withLocation(ModernUIMod.location("pipeline/modern_text_sdf_stroke"))
             .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_sdf_stroke"))
             .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -1.0F, -10.0F))
-            .build();;
+            .build();
 
-    public static final RenderPipeline PIPELINE_GUI_SDF = RenderPipelines.register(RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
+    public static final RenderPipeline PIPELINE_GUI_SDF = RenderPipeline.builder(PIPELINE_SDF_SNIPPET)
             .withLocation(ModernUIMod.location("pipeline/modern_text_gui_sdf"))
             .withFragmentShader(ModernUIMod.location("core/rendertype_modern_text_sdf_fill"))
             .withDepthStencilState(Optional.empty())
-            .build();;
+            .build();
 
     /*private static volatile RenderPipeline sCurrentPipelineSDFFill = PIPELINE_SDF_FILL;
     private static volatile RenderPipeline sCurrentPipelineSDFStroke = PIPELINE_SDF_STROKE;
