@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GuiTextRenderState.class)
-public abstract class MixinGuiTextRenderState {
+public abstract class MixinGuiTextRenderState implements GuiTextRenderStateAccessor {
 
     @Accessor("text")
     public abstract FormattedCharSequence modernui$getText();
