@@ -18,6 +18,7 @@
 
 package icyllis.modernui.mc.text.mixin;
 
+import icyllis.modernui.mc.text.GuiTextRenderStateAccessor;
 import icyllis.modernui.mc.text.ModernPreparedText;
 import icyllis.modernui.mc.text.TextLayoutEngine;
 import net.minecraft.client.gui.ActiveTextCollector;
