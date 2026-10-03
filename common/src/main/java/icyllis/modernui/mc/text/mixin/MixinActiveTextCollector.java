@@ -55,7 +55,7 @@ public interface MixinActiveTextCollector {
                 ScreenRectangle localBounds = preparedText.bounds();
                 if (localBounds != null && localBounds.containsPoint((int) localX, (int) localY)) {
                     Style style = TextLayoutEngine.getInstance().getStringSplitter()
-                            .styleAtWidth(((MixinGuiTextRenderState) (Object) text).modernui$getText(), localX - ((ModernPreparedText) preparedText).x);
+                            .styleAtWidth(((GuiTextRenderStateAccessor) (Object) text).modernui$getText(), localX - ((ModernPreparedText) preparedText).x);
                     if (style != null) {
                         consumer.accept(style);
                     }
