@@ -75,6 +75,11 @@ dependencies {
     include("dev.icyllis:modernui-core:${core_version}")
     // Minecraft 26.3 switched its window backend from GLFW to SDL and no longer ships lwjgl-glfw.
     include("org.lwjgl:lwjgl-glfw:3.4.3")
+    // Minecraft 26.3 no longer bundles GLFW natives; Modern UI still uses GLFW for framework initialization.
+    ["natives-windows", "natives-windows-arm64", "natives-linux", "natives-linux-arm64",
+     "natives-macos", "natives-macos-arm64"].each {
+        include("org.lwjgl:lwjgl-glfw:3.4.3:${it}")
+    }
     implementation("icyllis.modernui:ModernUI-Markflow:3.12.0") {
         exclude group: 'icyllis.modernui'
     }
