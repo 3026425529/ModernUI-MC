@@ -9,7 +9,6 @@
     "AccessFrontendGpuDevice",
     "AccessGlDevice",
     "AccessClientTextTooltip",
-    "AccessGameRenderer",
     "AccessOptions",
     "MixinChatFormatting",
     "MixinChatScreen",
