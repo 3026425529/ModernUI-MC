@@ -72,9 +72,7 @@ dependencies {
         }
     }
     implementation("dev.icyllis:modernui-core:${core_version}")
-    shadow("dev.icyllis:modernui-core:${core_version}") {
-        transitive = false
-    }
+    include("dev.icyllis:modernui-core:${core_version}")
     implementation("icyllis.modernui:ModernUI-Markflow:3.12.0") {
         exclude group: 'icyllis.modernui'
     }
