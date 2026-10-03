@@ -19,6 +19,7 @@
 package icyllis.modernui.mc.text.mixin;
 
 import icyllis.modernui.graphics.MathUtil;
+import icyllis.modernui.mc.text.GuiTextRenderStateAccessor;
 import icyllis.modernui.mc.text.ModernTextRenderer;
 import icyllis.modernui.mc.text.TextLayout;
 import icyllis.modernui.mc.text.TextLayoutEngine;
