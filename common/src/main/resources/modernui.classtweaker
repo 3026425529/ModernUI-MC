@@ -3,3 +3,4 @@ accessible class net/minecraft/client/OptionInstance$IntRangeBase
 accessible class net/minecraft/client/OptionInstance$SliderableOrCyclableValueSet
 accessible class net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 accessible class net/minecraft/client/gui/font/FontManager$CachedFontProvider
+accessible method net/minecraft/client/renderer/RenderPipelines register (Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;)Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;
